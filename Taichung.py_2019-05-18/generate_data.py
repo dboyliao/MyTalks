@@ -55,7 +55,7 @@ if __name__ == "__main__":
         "--birth-prob",
         help="the probability of giving birth to a child [default: %(default)s]",
         type=float,
-        default=0.7,
+        default=0.5,
         dest="prob_have_child",
     )
     parser.add_argument(
