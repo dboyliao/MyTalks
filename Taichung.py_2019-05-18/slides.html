@@ -13276,7 +13276,7 @@ a.anchor-link {
 <div class="text_cell_render border-box-sizing rendered_html">
 <ol>
 <li><code>Collect Data</code></li>
-<li><code>ETL</code></li>
+<li><code>ETL/EDA</code></li>
 <li><code>Statistics/Machine Learing/Deep Learning(?)</code></li>
 <li><code>Production</code></li>
 </ol>
@@ -14268,9 +14268,9 @@ has_child     16.6527   10.1155   1.6463  0.0997   -3.1732  36.4786
                   |
                   | groupBy(user) + collect_list
                   |
-                  +----&gt; +------+-------------------------------+
-                         | dboy | [(designer1, timestamp), ...] |
-                         +------+-------------------------------+</code></pre>
+                  +----&gt; +------+--------------------------------+
+                         | dboy | [(designer1, timestamp1), ...] |
+                         +------+--------------------------------+</code></pre>
 
 </div>
 </div>
@@ -14358,7 +14358,7 @@ has_child     16.6527   10.1155   1.6463  0.0997   -3.1732  36.4786
 |   :  |     :     |      :     |                                
 +------+-----------+------------+
        |
-       | groupBy(tid1, tid2) + count
+       | groupBy(designer1, designer2) + count
        |
        |                     +-----------+-----------+-------+
        |                     | designer1 | designer2 | count |
@@ -14379,11 +14379,11 @@ has_child     16.6527   10.1155   1.6463  0.0997   -3.1732  36.4786
 |     :     |     :     |   :   |
 +-----------+-----------+-------+
             |
-            |          +-----------+-----------+---------+-----+
-            |          | designer1 | designer2 | metric1 | ... |
-            +--------&gt; +-----------+-----------+---------+-----+
-                       |     :     |     :     |    :    |  :  |
-                       +-----------+-----------+---------+-----+</code></pre>
+            |          +-----------+-----------+---------+---------+
+            |          | designer1 | designer2 | metric1 | metric2 |
+            +--------&gt; +-----------+-----------+---------+---------+
+                       |     :     |     :     |    :    |    :    |
+                       +-----------+-----------+---------+---------+</code></pre>
 
 </div>
 </div>
