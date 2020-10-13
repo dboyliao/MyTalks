@@ -13202,7 +13202,7 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Model-Serialization:-Lesson-Learned-from-Tensorflow-1.x-and-2.x">Model Serialization: Lesson Learned from Tensorflow 1.x and 2.x<a class="anchor-link" href="#Model-Serialization:-Lesson-Learned-from-Tensorflow-1.x-and-2.x">&#182;</a></h1>
+<h1 id="Model-Serialization:-Lesson-Learnt-from-Tensorflow-1.x-and-2.x">Model Serialization: Lesson Learnt from Tensorflow 1.x and 2.x<a class="anchor-link" href="#Model-Serialization:-Lesson-Learnt-from-Tensorflow-1.x-and-2.x">&#182;</a></h1>
 </div>
 </div>
 </div><div class="fragment">
@@ -13407,6 +13407,7 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Dynamic Quantization</p>
 <p><img src="images/simple-model-quant-zoom.png" alt="simple-model-quant-zoom"></p>
 
 </div>
@@ -13504,6 +13505,43 @@ a.anchor-link {
 
 </div>
 </div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>Keras</code> Float Model</p>
+<p><img src="images/keras-float.png" alt="keras-float"></p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>Keras</code> Quantized Model (TFLite)</p>
+<p><img src="images/keras-quant.png" alt="keras-quant"></p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Graph-Rewriting">Graph Rewriting<a class="anchor-link" href="#Graph-Rewriting">&#182;</a></h2><ul>
+<li><a href="https://utensor-cgen.readthedocs.io/en/latest/#use-case-dropout-layer-removal">Dropout Removal</a></li>
+<li><a href="https://utensor-cgen.readthedocs.io/en/latest/#use-case-node-fusion">Node Fusion</a></li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Implement with isomorphic subgraph matching</p>
+
+</div>
+</div>
 </div></div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -13511,19 +13549,119 @@ a.anchor-link {
 <h1 id="Why-I'm-Fucked">Why I'm Fucked<a class="anchor-link" href="#Why-I'm-Fucked">&#182;</a></h1>
 </div>
 </div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Inconsistent-Operation-Name">Inconsistent Operation Name<a class="anchor-link" href="#Inconsistent-Operation-Name">&#182;</a></h2>
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>ex: <code>Add</code> vs <code>QuantizedAdd</code> vs <code>AddOp</code></li>
+</ul>
 
-    </div>
 </div>
 </div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Hard to implement/test isomorphic subgraph matching<ul>
+<li>Operation name legalization is required</li>
+</ul>
+</li>
+</ul>
 
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Fused-Operation">Fused Operation<a class="anchor-link" href="#Fused-Operation">&#182;</a></h2>
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>ex: <code>MatMul + Add + &lt;activation_func&gt; =&gt; FullyConnected</code></li>
+</ul>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Hard to define a <strong>generic</strong> intermediate representation<ul>
+<li><code>FullyConnected =&gt; MatMul + Add + &lt;activation_func&gt;</code>?</li>
+<li><code>MatMul + Add + &lt;activation_func&gt; =&gt; FullyConnected</code>?</li>
+<li>Which is better and why?</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Breaking-Changes-of-Frameworks">Breaking Changes of Frameworks<a class="anchor-link" href="#Breaking-Changes-of-Frameworks">&#182;</a></h2>
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Changes in quantization scheme<ul>
+<li>Dynamic Quantization v.s Static Quantization</li>
+<li>Quantization-Awared Training</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Inconsistent Saving/Loading API</li>
+</ul>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Undocumented features<ul>
+<li><a href="https://github.com/tensorflow/tensorflow/blob/r2.0/tensorflow/python/tools/freeze_graph.py">Graph freezing tools in Tensorflow 2.0</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Q-&amp;-A">Q &amp; A<a class="anchor-link" href="#Q-&amp;-A">&#182;</a></h1>
+</div>
+</div>
 </div></section></section>
 </div>
 </div>
