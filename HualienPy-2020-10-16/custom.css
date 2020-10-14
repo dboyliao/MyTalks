@@ -22,3 +22,4 @@ div.backgrounds {
 .reveal a {
     color: rgba(150, 137, 19, 0.904);
 }
+@import url("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0/css/theme/night.css");
